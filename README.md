@@ -1,4 +1,4 @@
-# rzrControl
+# Razer Control
 
 This webapp allows users to edit hardware settings for Razer gaming laptops in Linux using the [WebHID API](https://developer.mozilla.org/en-US/docs/Web/API/WebHID_API). 
 
