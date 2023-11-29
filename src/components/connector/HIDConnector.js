@@ -62,6 +62,7 @@ const HIDConnector = () => {
       }
 
       for (const i in devices) {
+        console.log(devices);
         if (
           devices[i].collections.length === 1 &&
           devices[i].collections[0]["featureReports"].length === 1
@@ -70,6 +71,7 @@ const HIDConnector = () => {
           await selectedDevice.open().catch(error => {
             throw error;
           });
+          console.log("connected to blade");
           const device = new HIDDevice(selectedDevice);
           setDevice(device);
           setConnected(true);

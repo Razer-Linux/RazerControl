@@ -19,6 +19,7 @@ const bhoToByte = (on, level) => {
   }
   return level;
 };
+
 const BatteryChargeLimitModule = () => {
   const { connected } = useContext(HIDConnectionContext);
   const { sendAndReceive } = useDeviceQueue();
