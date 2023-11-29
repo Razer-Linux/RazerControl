@@ -3,6 +3,7 @@
 import React, { useContext, useEffect } from "react";
 import { HIDConnectionContext } from "../../context/HIDConnectionContext";
 import { HIDDevice } from "../../services/HIDDevice";
+import { GetKeybLightingModePacket } from "@/services/RazerPacket";
 
 // TODO: make this external so additions don't require changing code
 const acceptableDevices = [
@@ -61,22 +62,31 @@ const HIDConnector = () => {
         return;
       }
 
+      console.log(devices);
       for (const i in devices) {
-        console.log(devices);
-        if (
-          devices[i].collections.length === 1 &&
-          devices[i].collections[0]["featureReports"].length === 1
-        ) {
-          const selectedDevice = devices[i];
-          await selectedDevice.open().catch(error => {
-            throw error;
-          });
-          console.log("connected to blade");
+        const selectedDevice = devices[i];
+        try {
+          await selectedDevice.open();
+          let testPacket = new GetKeybLightingModePacket();
+      
+          try {
+            await selectedDevice.sendFeatureReport(testPacket.bytes[0], testPacket.bytes.slice(1));
+          } catch (packetError) {
+            console.log("failed to send packet to device: ", i);
+            // Continue to the next device since an error occurred
+            continue;
+          }
+
+          console.log("successfully sent packet to device: ", i, " ... connecting");
           const device = new HIDDevice(selectedDevice);
           setDevice(device);
           setConnected(true);
           break;
+        } catch (openError) {
+          console.error("Error opening device:", openError);
+          continue;
         }
+
       }
     } catch (error) {
       console.error("An error occurred: ", error);
