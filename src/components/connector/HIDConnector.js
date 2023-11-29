@@ -67,7 +67,9 @@ const HIDConnector = () => {
           devices[i].collections[0]["featureReports"].length === 1
         ) {
           const selectedDevice = devices[i];
-          await selectedDevice.open();
+          await selectedDevice.open().catch(error => {
+            throw error;
+          });
           const device = new HIDDevice(selectedDevice);
           setDevice(device);
           setConnected(true);
